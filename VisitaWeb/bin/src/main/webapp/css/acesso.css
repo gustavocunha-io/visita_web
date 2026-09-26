@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+.card-autenticacao {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+}
+
+.bloco-autenticacao {
+	width: 500px;
+	height: 400px;
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	gap: 15px;
+	background-color: gray;
+}
+
+.bloco-autenticacao h1 {
+	margin-top: 15px;
+	text-align: center;	
+}
+
+.bloco-autenticacao input:not(#mostrar-senha-login) {
+	width: 80%;
+	margin: 20px;
+	box-sizing: border-box; /* Evita que o tamanho do input passe o tamanho da div */
+}
+
+.bloco-autenticacao input {
+	justify-content: center;
+	align-items: center;
+	border-radius: 15px;
+	padding: 10px;
+	border-style: none;
+	outline-style: none;
+}
+
+
+.bloco-escondido {
+	display: none;
+}

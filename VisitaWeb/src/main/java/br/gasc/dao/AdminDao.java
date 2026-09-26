@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import br.gasc.controller.SenhaService;
 import br.gasc.dto.FabricaConexoes;
+import br.gasc.service.SenhaService;
 
 public class AdminDao {
 	private Connection connection;

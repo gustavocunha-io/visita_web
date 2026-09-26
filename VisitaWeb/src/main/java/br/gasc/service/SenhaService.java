@@ -1,4 +1,4 @@
-package br.gasc.controller;
+package br.gasc.service;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 

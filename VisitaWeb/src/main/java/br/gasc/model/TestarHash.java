@@ -1,6 +1,6 @@
 package br.gasc.model;
 
-import br.gasc.controller.SenhaService;
+import br.gasc.service.SenhaService;
 
 public class TestarHash {
 	public static void main(String[] args) {

@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ControladoraServlet extends HttpServlet {
 	private static final long serialVersionUID = 8106698518503992275L;
 	
-	
-
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String nomePacote = String.format("%s.%s", Logica.class.getPackageName(), request.getParameter("logica"));

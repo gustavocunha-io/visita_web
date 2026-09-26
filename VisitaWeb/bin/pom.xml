@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.gasc</groupId>
+  <artifactId>visita-web</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>visita-web</name>
+  <description>Essa aplicação tem como objetivo permitir o agendamento de visitas a museus da cidade ficticia de BQ City</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>25</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.3</version>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <!-- Source: https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+	<dependency>
+    	<groupId>org.postgresql</groupId>
+    	<artifactId>postgresql</artifactId>
+    	<version>42.7.13</version>
+    	<scope>compile</scope>
+	</dependency>
+	
+    <!-- Dependência da Servlet API para resolver o erro do HttpServlet -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope> <!-- IMPORTANTE: Indica que o Tomcat fornecerá essa biblioteca -->
+    </dependency>
+    
+	
+	<!-- Source: https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api -->
+	<dependency>
+	    <groupId>jakarta.servlet.jsp.jstl</groupId>
+	    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+	    <version>3.0.2</version>
+	    <scope>compile</scope>
+	</dependency>
+	
+	
+	<!-- Source: https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api -->
+	<dependency>
+	    <groupId>jakarta.servlet.jsp</groupId>
+	    <artifactId>jakarta.servlet.jsp-api</artifactId>
+	    <version>4.0.0</version>
+	    <scope>compile</scope>
+	</dependency>
+	
+	<!-- Source: https://mvnrepository.com/artifact/org.glassfish.web/jakarta.servlet.jsp.jstl -->
+	<dependency>
+	    <groupId>org.glassfish.web</groupId>
+	    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+	    <version>3.0.1</version>
+	    <scope>compile</scope>
+	</dependency>
+	
+	<dependency>
+	    <groupId>jakarta.servlet</groupId>
+	    <artifactId>jakarta.servlet-api</artifactId>
+	    <version>6.1.0</version>
+	    <scope>provided</scope>
+	</dependency>
+
+	
+	<!-- Source: https://mvnrepository.com/artifact/at.favre.lib/bcrypt -->
+	<dependency>
+	    <groupId>at.favre.lib</groupId>
+	    <artifactId>bcrypt</artifactId>
+	    <version>0.10.2</version>
+	    <scope>compile</scope>
+	</dependency>
+</dependencies>
+</project>
