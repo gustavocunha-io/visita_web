@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +36,15 @@ public class MuseuDAO {
 				museu.setId(resultSet.getInt("id"));
 				museu.setNome(resultSet.getString("nome"));
 				museu.setDiasFuncionamento(obterDiasFuncionamento(resultSet.getString("dias_semana")));
-				museu.setHorarioAbertura(LocalTime.parse(resultSet.getString("horario_abertura")));
-				museu.setHorarioFechamento(LocalTime.parse(resultSet.getString("horario_fechamento")));
+				museu.setHorarioAbertura(resultSet.getTime("horario_abertura").toLocalTime());
+				museu.setHorarioFechamento(resultSet.getTime("horario_fechamento").toLocalTime());
 				museusList.add(museu);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("Passe aqui mane");
 		
 		return museusList;
 	}
