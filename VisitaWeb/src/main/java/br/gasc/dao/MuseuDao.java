@@ -6,15 +6,59 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import br.gasc.dto.FabricaConexoes;
 import br.gasc.model.Museu;
 
-public class MuseuDAO {
+public class MuseuDao implements Dao<Museu, Integer> {
 	private Connection connection;
 
-	public MuseuDAO() {
+	public MuseuDao() {
 		this.connection = FabricaConexoes.getConnection();
+	}
+
+	@Override
+	public boolean inserir(Museu t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean alterar(Museu t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deletar(Integer id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public Optional<Museu> pesquisar(Integer id) {
+		String query = "SELECT * FROM museu WHERE id=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			Museu museu = new Museu();
+			
+			while(resultSet.next()) {					
+				museu.setId(resultSet.getInt("id"));
+				museu.setNome(resultSet.getString("nome"));
+				museu.setDiasFuncionamento(obterDiasFuncionamento(resultSet.getString("dias_semana")));
+				museu.setHorarioAbertura(resultSet.getTime("horario_abertura").toLocalTime());
+				museu.setHorarioFechamento(resultSet.getTime("horario_fechamento").toLocalTime());
+			}
+				
+			return Optional.of(museu);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return Optional.empty();
 	}
 	
 	/**
@@ -23,7 +67,8 @@ public class MuseuDAO {
 	 * 
 	 * @return lista com os dados dos museus existentes
 	 */
-	public List<Museu> listarMuseus() {
+	@Override
+	public List<Museu> listar() {
 		String query = "SELECT * FROM museu";
 		List<Museu> museusList = new ArrayList<Museu>();
 		
@@ -77,5 +122,4 @@ public class MuseuDAO {
 			diasFuncionamentoList.add(Integer.valueOf(dia));
 		return diasFuncionamentoList;
 	}
-	
 }

@@ -2,8 +2,6 @@ package br.gasc.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -37,12 +35,8 @@ public class Museu {
 		this.nome = nome;
 	}
 
-	public List<String> getDiasFuncionamento() {
-		List<String> diasList = new ArrayList<String>();
-		
-		for (DayOfWeek dia : diasFuncionamento)
-			diasList.add(dia.getDisplayName(TextStyle.FULL, PT_BR));
-		return diasList;
+	public Set<DayOfWeek> getDiasFuncionamento() {
+		return diasFuncionamento;
 	}
 
 	public void setDiasFuncionamento(List<Integer> diasFuncionamento) {
