@@ -25,12 +25,17 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 			if(agendamento != null) {
-				preparedStatement.setTimestamp(1, Timestamp.valueOf(agendamento.getDataHoraInicio()));
-				preparedStatement.setInt(2, agendamento.getNumeroPessoas());
-				preparedStatement.setBoolean(1, agendamento.getTermosResponsabilidade());
-				preparedStatement.execute();
+				int numeroMaximoPessoasMuseu = obterMaximoPessoaMuseu();
+				int numeroPessoasAgendamento = agendamento.getNumeroPessoas(); 
 				
-				return true;
+				if(numeroPessoasAgendamento <= numeroMaximoPessoasMuseu && numeroMaximoPessoasMuseu > 0) {
+					preparedStatement.setTimestamp(1, Timestamp.valueOf(agendamento.getDataHoraInicio()));
+					preparedStatement.setInt(2, agendamento.getNumeroPessoas());
+					preparedStatement.setBoolean(1, agendamento.getTermosResponsabilidade());
+					preparedStatement.execute();
+					
+					return true;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,8 +87,40 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 		return agendamentosList;
 	}
 	
+	/**
+	 * Obtem o número máximo de pessoas que podem realizar uma visita simultaneamente no museu se não
+	 * retorna -1 para indicar que occoreu algum problema ao realizar a consulta no banco de daos
+	 *  
+	 * @return número maximo de pessoas por horário de visita
+	 */
 	private int obterMaximoPessoaMuseu() {
-		return 1;
+		String query = "SELECT maximo_pessoas FROM museu";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet != null)
+				return resultSet.getInt("maximo_pessoa");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+	
+	private int obterNumeroPessoasAgendamento() {
+		String query = "SELECT numero_pessoas FROM agendamento";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.isBeforeFirst())
+				return resultSet.getInt("numero_pessoas");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 
 }

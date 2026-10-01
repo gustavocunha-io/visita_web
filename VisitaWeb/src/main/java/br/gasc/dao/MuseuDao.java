@@ -120,6 +120,7 @@ public class MuseuDao implements Dao<Museu, Integer> {
 		
 		for (String dia : diasSemana)
 			diasFuncionamentoList.add(Integer.valueOf(dia));
+		
 		return diasFuncionamentoList;
 	}
 }
