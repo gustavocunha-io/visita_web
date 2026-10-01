@@ -3,6 +3,9 @@ package br.gasc.controller;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,7 +23,7 @@ public class SalvarAgendamento implements Logica {
 		String horarioAgendamentoStr = request.getParameter("horario-agendamento");
 		MuseuDao museuDao = new MuseuDao();
 		
-		if(idMuseuStr.isEmpty() || dataAgendamentoStr.isEmpty() || horarioAgendamentoStr.isEmpty()) {
+		if(idMuseuStr == null || idMuseuStr.isEmpty() || dataAgendamentoStr.isEmpty() || horarioAgendamentoStr.isEmpty()) {
 			request.setAttribute("status", false);
 		} else {
 			Integer idMuseu = Integer.valueOf(idMuseuStr);

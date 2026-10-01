@@ -35,8 +35,13 @@
         	</label>
     	</div>
 	</c:forEach>
-	<label for="cpf-usuario">CPF:</label>
-	<input id="cpf-usuario" name="cpf-usuario" type="text" ${status eq true ? '' : 'disabled'} required>
+	<c:set var="statusAgendamento" value="${not empty status ? '' : 'disabled'}"></c:set>
+	<label for="cpf-usuario">CPF: </label>
+	<input id="cpf-usuario" name="cpf-usuario" type="text" ${statusAgendamento} required>
+	<label for="nome-usuario">Nome: </label>
+	<input id="nome-usuario" name="nome-usuario" type="text" ${statusAgendamento} required>
+	<label for="emails">Email(s): </label>
+	<input id="emails" name="emails" type="email" ${statusAgendamento} required>
 	</form>
 </body>
 </html>

@@ -42,6 +42,7 @@ public class MuseuDao implements Dao<Museu, Integer> {
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 			preparedStatement.setInt(1, id);
+			
 			ResultSet resultSet = preparedStatement.executeQuery();
 			Museu museu = new Museu();
 			
@@ -83,13 +84,12 @@ public class MuseuDao implements Dao<Museu, Integer> {
 				museu.setDiasFuncionamento(obterDiasFuncionamento(resultSet.getString("dias_semana")));
 				museu.setHorarioAbertura(resultSet.getTime("horario_abertura").toLocalTime());
 				museu.setHorarioFechamento(resultSet.getTime("horario_fechamento").toLocalTime());
+				
 				museusList.add(museu);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println("Passe aqui mane");
 		
 		return museusList;
 	}
