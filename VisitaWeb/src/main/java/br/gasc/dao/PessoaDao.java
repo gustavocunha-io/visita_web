@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,29 +20,32 @@ public class PessoaDao implements Dao<Pessoa, Integer> {
 	}
 	
 	@Override
-	public boolean inserir(Pessoa pessoa) {
-		final String query = "INSERT INTO (nome, cpf, email) VALUES (?, ?, ?)";
+	public Pessoa inserir(Pessoa pessoa) {
+		final String query = "INSERT INTO pessoa (nome, cpf) VALUES (?, ?)";
 		
-		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			preparedStatement.setString(1, pessoa.getNome());
 			preparedStatement.setString(2, pessoa.getCpf());
-			preparedStatement.setString(3, pessoa.getEmail());
+			preparedStatement.executeUpdate();
 			
-			return preparedStatement.execute();
+			try (ResultSet resultSet = preparedStatement.getGeneratedKeys()){
+				if(resultSet.next())
+					pessoa.setId(resultSet.getInt(1));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		
+		return pessoa;
 	}
 
 	@Override
 	public boolean alterar(Pessoa pessoa) {
-		final String query = "UPDATE pessoa SET nome=?, cpf=?, email=? WHERE id=?";
+		final String query = "UPDATE pessoa SET nome=?, cpf=? WHERE id=?";
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 			preparedStatement.setString(1, pessoa.getNome());
 			preparedStatement.setString(2, pessoa.getCpf());
-			preparedStatement.setString(3, pessoa.getEmail());
 			preparedStatement.setInt(4, pessoa.getId());
 			
 			return preparedStatement.execute();
@@ -57,7 +61,10 @@ public class PessoaDao implements Dao<Pessoa, Integer> {
 		String query = "DELETE FROM pessoa WHERE id=?";
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			return preparedStatement.execute();
+			preparedStatement.setInt(1, id);
+			
+			if(preparedStatement.executeUpdate() > 0)
+				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -70,15 +77,43 @@ public class PessoaDao implements Dao<Pessoa, Integer> {
 		String query = "SELECT * FROM pessoa WHERE id=?";
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			
 			ResultSet resultSet = preparedStatement.executeQuery();
-			Pessoa pessoa = new Pessoa();
-				
-			pessoa.setId(resultSet.getInt("id"));
-			pessoa.setNome(resultSet.getString("nome"));
-			pessoa.setCpf(resultSet.getString("cpf"));
-			pessoa.setEmail(resultSet.getString("email"));
-				
-			return Optional.of(pessoa);
+			
+			if(resultSet.next()) {
+				Pessoa pessoa = new Pessoa();
+					
+				pessoa.setId(resultSet.getInt("id"));
+				pessoa.setNome(resultSet.getString("nome"));
+				pessoa.setCpf(resultSet.getString("cpf"));
+					
+				return Optional.of(pessoa);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return Optional.empty();
+	}
+	
+	public Optional<Pessoa> pesquisar(String cpf) {
+		String query = "SELECT * FROM pessoa WHERE cpf=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setString(1, cpf);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				Pessoa pessoa = new Pessoa();
+					
+				pessoa.setId(resultSet.getInt("id"));
+				pessoa.setNome(resultSet.getString("nome"));
+				pessoa.setCpf(resultSet.getString("cpf"));
+					
+				return Optional.of(pessoa);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -99,7 +134,6 @@ public class PessoaDao implements Dao<Pessoa, Integer> {
 				
 				pessoa.setNome(resultSet.getString("nome"));
 				pessoa.setCpf(resultSet.getString("cpf"));
-				pessoa.setEmail(resultSet.getString("email"));
 				
 				pessoasList.add(pessoa);
 			}
@@ -108,14 +142,6 @@ public class PessoaDao implements Dao<Pessoa, Integer> {
 		}
 		
 		return pessoasList;
-	}
-	
-	public static void main(String[] args) {
-		PessoaDao pessoaDao = new PessoaDao();
-		List<Pessoa> pessoasList = pessoaDao.listar();
-		
-		for(Pessoa pessoa : pessoasList)
-			System.out.println(pessoa);
 	}
 
 }

@@ -1,9 +1,11 @@
 package br.gasc.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +21,25 @@ public class IngressoDao implements Dao<Ingresso, Integer> {
 	}
 
 	@Override
-	public boolean inserir(Ingresso ingresso) {
-		return false;
+	public Ingresso inserir(Ingresso ingresso) {
+		String query = "INSERT INTO tipo_ingresso (tipo, preco) VALUES (?, ?)";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			if(ingresso != null) {
+				preparedStatement.setString(1, ingresso.getTipo());
+				preparedStatement.setBigDecimal(2, ingresso.getPreco());
+				preparedStatement.executeUpdate();
+				
+				try(ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+					if(resultSet.next())
+						ingresso.setId(resultSet.getInt(1));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return ingresso;
 	}
 
 	@Override
@@ -59,6 +78,21 @@ public class IngressoDao implements Dao<Ingresso, Integer> {
 		}
 		
 		return ingressosList;
+	}
+	
+	public static void main(String[] args) {
+		IngressoDao ingressoDao = new IngressoDao();
+		
+		Ingresso ingresso = new Ingresso();
+		
+		ingresso.setTipo("Inteiro");
+		ingresso.setPreco(new BigDecimal(20.0));
+		
+		ingresso = ingressoDao.inserir(ingresso);
+		
+		System.out.println(ingresso.getId());
+		System.out.println(ingresso.getTipo());
+		System.out.println(ingresso.getPreco());
 	}
 
 }

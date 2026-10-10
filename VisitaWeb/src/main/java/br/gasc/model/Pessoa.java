@@ -4,10 +4,7 @@ public class Pessoa {
 	private Integer id;
 	private String nome;
 	private String cpf;
-	private String email;
 	
-	public Pessoa() {}
-
 	public Integer getId() {
 		return id;
 	}
@@ -30,19 +27,6 @@ public class Pessoa {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("Nome: %s\ncpf: %s\nEmail: %s", nome, cpf, email);
 	}
 	
 }

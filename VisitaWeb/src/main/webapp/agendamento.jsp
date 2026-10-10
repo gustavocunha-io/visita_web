@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:if test="${empty museusList}">
-    <% response.sendRedirect("controladora?logica=ExibirMuseus"); %>
-</c:if>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,28 +16,36 @@
 	</c:if>
 	<h1>Agendamento Museu</h1>
 	<form action="controladora" method="post">
-		<input type="hidden" name="logica" value="SalvarAgendamento">
+		
 		<label for="data-agendamento">Data do Agendamento: </label>
-		<input id="data-agendamento" name="data-agendamento" type="date" required="required">
-		<label for="horário">Horário: </label>
-		<input id="horario-agendamento" name="horario-agendamento" type="time" required="required">
-		<input id="botao-enviar" type="submit" value="Confirmar">
+		<input id="data-agendamento" name="data-agendamento" type="date" <c:if test="${museu.id eq museuSelecionado}">checked</c:if> required><br>
+		<label for="horario-agendamento">Horários: </label>
+		<input id="horario-agendamento" name="horario-agendamento" type="time" required><br>
+		
 		<c:forEach var="museu" items="${museusList}">
-    	<div style="margin-bottom: 8px;">
-        	<label>
-            	<input type="radio" name="id-museu" value="${museu.id}" />
-            	<strong>${museu.nome}</strong> 
-            	Das ${museu.horarioAbertura} às ${museu.horarioFechamento}
-        	</label>
-    	</div>
-	</c:forEach>
-	<c:set var="statusAgendamento" value="${not empty status ? '' : 'disabled'}"></c:set>
-	<label for="cpf-usuario">CPF: </label>
-	<input id="cpf-usuario" name="cpf-usuario" type="text" ${statusAgendamento} required>
-	<label for="nome-usuario">Nome: </label>
-	<input id="nome-usuario" name="nome-usuario" type="text" ${statusAgendamento} required>
-	<label for="emails">Email(s): </label>
-	<input id="emails" name="emails" type="email" ${statusAgendamento} required>
+    		<div style="margin-bottom: 8px;">
+        		<label>
+            		<input type="radio" name="id-museu" value="${museu.id}" ${museu.id eq museuSelecionado ? 'checked' : ''}/>
+            		<strong>${museu.nome}</strong> 
+            		Das ${museu.horarioAbertura} às ${museu.horarioFechamento}
+        		</label>
+    		</div>
+		</c:forEach>
+		
+		<input type="text" hidden="true" name="logica" value="AgendamentoController">
+		<input type="submit" value="confirmar">
+		
+		<c:set var="statusAgendamento" value="${not empty status ? '' : 'disabled'}"></c:set>
+		
+		<div>
+			<label for="cpf-usuario">CPF: </label>
+			<input id="cpf-usuario" name="cpf-usuario" type="text" ${statusAgendamento} required>
+			<label for="nome-usuario">Nome: </label>
+			<input id="nome-usuario" name="nome-usuario" type="text" ${statusAgendamento} required>
+			<label for="emails">Email(s): </label>
+			<input id="emails" name="emails" type="email" ${statusAgendamento} required>
+		</div>
+		
 	</form>
 </body>
 </html>

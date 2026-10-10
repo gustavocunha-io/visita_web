@@ -7,7 +7,7 @@ import br.gasc.model.Museu;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ExibirMuseus implements Logica {
+public class FormularioAgendamento implements Logica {
 	
 	@Override
 	public String executar(HttpServletRequest request, HttpServletResponse response) {
@@ -16,7 +16,7 @@ public class ExibirMuseus implements Logica {
 		
 		request.setAttribute("museusList", museusList);
 		
-		return "agendamento.jsp";
+		return "data-agendamento.jsp";
 	}
 
 }

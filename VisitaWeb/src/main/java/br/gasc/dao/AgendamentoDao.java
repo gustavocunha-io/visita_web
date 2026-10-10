@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.postgresql.core.Query;
 
 import br.gasc.dto.FabricaConexoes;
 import br.gasc.model.Agendamento;
@@ -20,23 +23,55 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 	}
 
 	@Override
-	public boolean inserir(Agendamento agendamento) {
-		String query = "INSERT INTO agendamento VALUES (?, ?, ?)";
+	public Agendamento inserir(Agendamento agendamento) {
+		String query = "INSERT INTO agendamento (data_hora, numero_pessoas, email_responsavel, termo_consentimento,"
+				+ "codigo_confirmacao, id_museu) VALUES (?, ?, ?, ?, ?, ?)";
 		
-		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			if(agendamento != null) {
-				int numeroMaximoPessoasMuseu = obterMaximoPessoaMuseu();
+				MuseuDao museuDao = new MuseuDao();
+				int numeroMaximoPessoasMuseu = museuDao.obterMaximoPessoaMuseu(agendamento.getIdMuseu());
 				int numeroPessoasAgendamento = agendamento.getNumeroPessoas(); 
 				
 				if(numeroPessoasAgendamento <= numeroMaximoPessoasMuseu && numeroMaximoPessoasMuseu > 0) {
 					preparedStatement.setTimestamp(1, Timestamp.valueOf(agendamento.getDataHoraInicio()));
 					preparedStatement.setInt(2, agendamento.getNumeroPessoas());
-					preparedStatement.setBoolean(1, agendamento.getTermosResponsabilidade());
-					preparedStatement.execute();
+					preparedStatement.setString(3, agendamento.getEmailResponsavel());
+					preparedStatement.setBoolean(4, agendamento.getTermoConsentimento());
+					preparedStatement.setString(5, agendamento.getCodigoConfimacao());
+					preparedStatement.setInt(6, agendamento.getIdMuseu());
 					
-					return true;
+					if(preparedStatement.executeUpdate() > 0) {
+						try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+							if(resultSet.next())
+								agendamento.setId(resultSet.getInt(1));
+						}
+					}
 				}
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return agendamento;
+	}
+
+	@Override
+	public boolean alterar(Agendamento agendamento) {
+		String query = "UPDATE agendamento SET data_hora=?, numero_pessoas=?, "
+				+ "email_responsavel=?, termo_consentimento=?, "
+				+ "codigo_confirmacao=? WHERE id=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setTimestamp(1, Timestamp.valueOf(agendamento.getDataHoraInicio()));
+			preparedStatement.setInt(2, agendamento.getNumeroPessoas());
+			preparedStatement.setString(3, agendamento.getEmailResponsavel());
+			preparedStatement.setBoolean(4,	agendamento.getTermoConsentimento());
+			preparedStatement.setString(5, agendamento.getCodigoConfimacao());
+			preparedStatement.setInt(6, agendamento.getId());
+			
+			if(preparedStatement.executeUpdate() > 0)
+				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -45,23 +80,79 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 	}
 
 	@Override
-	public boolean alterar(Agendamento agendamento) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean deletar(Integer id) {
-		// TODO Auto-generated method stub
+		String query = "DELETE FROM agendamento WHERE id=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			
+			if(preparedStatement.executeUpdate() > 0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return false;
 	}
 
 	@Override
 	public Optional<Agendamento> pesquisar(Integer id) {
-		// TODO Auto-generated method stub
+		String query = "SELECT * FROM agendamento WHERE id=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				Agendamento agendamento = new Agendamento();
+				
+				agendamento.setId(resultSet.getInt("id"));
+				agendamento.setDataHoraInicio(resultSet.getTimestamp("data_hora").toLocalDateTime());
+				agendamento.setNumeroPessoas(resultSet.getInt("numero_pessoas"));
+				agendamento.setEmailResponsavel(resultSet.getString("email_responsavel"));
+				agendamento.setTermoConsentimento(resultSet.getBoolean("termo_consentimento"));
+				agendamento.setCodigoConfimacao(resultSet.getString("codigo_confirmacao"));
+				agendamento.setIdMuseu(resultSet.getInt("id_museu"));
+				
+				return Optional.of(agendamento);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return Optional.empty();
 	}
-
+	
+	public Optional<Agendamento> pesquisar(String codigo, String email) {
+		String query = "SELECT * FROM agendamento WHERE codigo_confirmacao=? AND email_responsavel=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setString(1, codigo);
+			preparedStatement.setString(2, email);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				Agendamento agendamento = new Agendamento();
+				
+				agendamento.setId(resultSet.getInt("id"));
+				agendamento.setDataHoraInicio(resultSet.getTimestamp("data_hora").toLocalDateTime());
+				agendamento.setNumeroPessoas(resultSet.getInt("numero_pessoas"));
+				agendamento.setEmailResponsavel(resultSet.getString("email_responsavel"));
+				agendamento.setTermoConsentimento(resultSet.getBoolean("termo_consentimento"));
+				agendamento.setCodigoConfimacao(resultSet.getString("codigo_confirmacao"));
+				agendamento.setIdMuseu(resultSet.getInt("id_museu"));
+				
+				return Optional.of(agendamento);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return Optional.empty();
+	}
+	
 	@Override
 	public List<Agendamento> listar() {
 		String query = "SELECT * FROM agendamento";
@@ -76,7 +167,7 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 				agendamento.setId(resultSet.getInt("id"));
 				agendamento.setDataHoraInicio(resultSet.getTimestamp("data_hora").toLocalDateTime());
 				agendamento.setNumeroPessoas(resultSet.getInt("numero_pessoas"));
-				agendamento.setTermosResponsabilidade(resultSet.getBoolean("termos_responsabilidade"));
+				agendamento.setTermoConsentimento(resultSet.getBoolean("termos_responsabilidade"));
 				
 				agendamentosList.add(agendamento);
 			}
@@ -87,34 +178,13 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 		return agendamentosList;
 	}
 	
-	/**
-	 * Obtem o número máximo de pessoas que podem realizar uma visita simultaneamente no museu se não
-	 * retorna -1 para indicar que occoreu algum problema ao realizar a consulta no banco de daos
-	 *  
-	 * @return número maximo de pessoas por horário de visita
-	 */
-	private int obterMaximoPessoaMuseu() {
-		String query = "SELECT maximo_pessoas FROM museu";
-		
-		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			ResultSet resultSet = preparedStatement.executeQuery();
-			
-			if(resultSet != null)
-				return resultSet.getInt("maximo_pessoa");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return -1;
-	}
-	
-	private int obterNumeroPessoasAgendamento() {
+	public int obterNumeroPessoasAgendamento() {
 		String query = "SELECT numero_pessoas FROM agendamento";
 		
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
-			if(resultSet.isBeforeFirst())
+			if(resultSet.next())
 				return resultSet.getInt("numero_pessoas");
 		} catch (SQLException e) {
 			e.printStackTrace();

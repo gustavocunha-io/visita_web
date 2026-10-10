@@ -13,6 +13,7 @@ public class Museu {
 	private Set<DayOfWeek> diasFuncionamento; 
 	private LocalTime horarioAbertura;
 	private LocalTime horarioFechamento;
+	private int numeroTotalVagas;
 	private static final Locale PT_BR = Locale.of("pt", "BR");
 	
 	public Museu() {
@@ -58,6 +59,14 @@ public class Museu {
 
 	public void setHorarioFechamento(LocalTime horarioFechamento) {
 		this.horarioFechamento = horarioFechamento;
+	}
+
+	public int getNumeroTotalVagas() {
+		return numeroTotalVagas;
+	}
+
+	public void setNumeroTotalVagas(int numeroTotalVagas) {
+		this.numeroTotalVagas = numeroTotalVagas;
 	}
 	
 }

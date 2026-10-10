@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,13 +21,12 @@ public class MuseuDao implements Dao<Museu, Integer> {
 	}
 
 	@Override
-	public boolean inserir(Museu t) {
-		// TODO Auto-generated method stub
-		return false;
+	public Museu inserir(Museu museu) {
+		return museu;
 	}
 
 	@Override
-	public boolean alterar(Museu t) {
+	public boolean alterar(Museu museu) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -52,6 +53,7 @@ public class MuseuDao implements Dao<Museu, Integer> {
 				museu.setDiasFuncionamento(obterDiasFuncionamento(resultSet.getString("dias_semana")));
 				museu.setHorarioAbertura(resultSet.getTime("horario_abertura").toLocalTime());
 				museu.setHorarioFechamento(resultSet.getTime("horario_fechamento").toLocalTime());
+				museu.setNumeroTotalVagas(resultSet.getInt("limite_pessoas"));
 			}
 				
 			return Optional.of(museu);
@@ -84,6 +86,7 @@ public class MuseuDao implements Dao<Museu, Integer> {
 				museu.setDiasFuncionamento(obterDiasFuncionamento(resultSet.getString("dias_semana")));
 				museu.setHorarioAbertura(resultSet.getTime("horario_abertura").toLocalTime());
 				museu.setHorarioFechamento(resultSet.getTime("horario_fechamento").toLocalTime());
+				museu.setNumeroTotalVagas(resultSet.getInt("limite_pessoas"));
 				
 				museusList.add(museu);
 			}
@@ -92,6 +95,46 @@ public class MuseuDao implements Dao<Museu, Integer> {
 		}
 		
 		return museusList;
+	}
+	
+	public int buscarVagasOcupadas(Integer idMuseu, LocalDateTime dataHoraAgendameno) {
+		String query = "SELECT COALESCE(SUM(numero_pessoas), 0) AS total FROM agendamento WHERE data_hora=?";
+		int totalPessoas = 0;
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setTimestamp(1, Timestamp.valueOf(dataHoraAgendameno));
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next())
+				totalPessoas += resultSet.getInt("total");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return totalPessoas;
+	}
+	
+	/**
+	 * Obtem o número máximo de pessoas que podem realizar uma visita simultaneamente no museu se não
+	 * retorna -1 para indicar que occoreu algum problema ao realizar a consulta no banco de daos
+	 *  
+	 * @return número maximo de pessoas por horário de visita
+	 */
+	public int obterMaximoPessoaMuseu(Integer idMuseu) {
+		String query = "SELECT limite_pessoas FROM museu WHERE id=?";
+		
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, idMuseu);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next())
+				return resultSet.getInt("limite_pessoas");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 	
 	/**

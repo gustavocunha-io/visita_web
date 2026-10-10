@@ -8,7 +8,7 @@ import java.util.Optional;
  */
 public interface Dao <T, K> {
 	// Permite realizar inserações banco de dados de um determinado dado.
-	boolean inserir(T t);
+	T inserir(T t);
 	
 	// Permite realizar alterações no banco de dados de acordo com o identificador id.
 	boolean alterar(T t);

@@ -6,7 +6,10 @@ public class Agendamento {
 	private Integer id;
 	private LocalDateTime dataHoraInicio;
 	private int numeroPessoas;
-	private boolean termosResponsabilidade;
+	private String emailResponsavel;
+	private boolean termoConsentimento;
+	private String codigoConfimacao;
+	private Integer idMuseu;
 
 	public Agendamento() {}
 
@@ -37,13 +40,37 @@ public class Agendamento {
 	public void setNumeroPessoas(int numeroPessoas) {
 		this.numeroPessoas = numeroPessoas;
 	}
-
-	public boolean getTermosResponsabilidade() {
-		return termosResponsabilidade;
+	
+	public String getEmailResponsavel() {
+		return emailResponsavel;
 	}
 
-	public void setTermosResponsabilidade(boolean termosResponsabilidade) {
-		this.termosResponsabilidade = termosResponsabilidade;
+	public void setEmailResponsavel(String emailResponsavel) {
+		this.emailResponsavel = emailResponsavel;
+	}
+
+	public boolean getTermoConsentimento() {
+		return termoConsentimento;
+	}
+
+	public void setTermoConsentimento(boolean termosResponsabilidade) {
+		this.termoConsentimento = termosResponsabilidade;
+	}
+	
+	public String getCodigoConfimacao() {
+		return codigoConfimacao;
+	}
+
+	public void setCodigoConfimacao(String codigoConfimacao) {
+		this.codigoConfimacao = codigoConfimacao;
+	}
+
+	public Integer getIdMuseu() {
+		return idMuseu;
+	}
+
+	public void setIdMuseu(Integer idMuseu) {
+		this.idMuseu = idMuseu;
 	}
 
 }
