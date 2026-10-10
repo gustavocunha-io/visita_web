@@ -5,7 +5,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
-	<link rel="stylesheet" href="css/acesso.css">
 </head>
 <body>
 	<c:import url="cabecalho.jsp"></c:import>

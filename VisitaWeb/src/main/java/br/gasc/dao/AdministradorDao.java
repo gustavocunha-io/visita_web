@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import br.gasc.dto.FabricaConexoes;
 import br.gasc.service.SenhaService;
 
-public class AdminDao {
+public class AdministradorDao {
 	private Connection connection;
 	
-	public AdminDao() {
+	public AdministradorDao() {
 		connection = FabricaConexoes.getConnection();
 	}
 	

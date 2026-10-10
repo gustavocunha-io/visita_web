@@ -1,12 +1,12 @@
 package br.gasc.controller;
 
 
-import br.gasc.dao.AdminDao;
+import br.gasc.dao.AdministradorDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-public class AcessoAdmin implements Logica {
+public class AcessoAdministrativo implements Logica {
 
 	@Override
 	public String executar(HttpServletRequest request, HttpServletResponse response) {
@@ -16,7 +16,7 @@ public class AcessoAdmin implements Logica {
 		System.out.println(login);
 		System.out.println(senha);
 		
-		AdminDao adminDao = new AdminDao();
+		AdministradorDao adminDao = new AdministradorDao();
 		boolean flag = adminDao.validarCredenciais(login, senha);
 		
 		System.out.println(flag);
@@ -28,9 +28,9 @@ public class AcessoAdmin implements Logica {
 			httpSession.setAttribute("status", true);
 			httpSession.setAttribute("login", login);
 			
-			return "cadastro.jsp";
+			return "cadastro-funcionarios.jsp";
 		}
 		
-		return "admin.jsp";
+		return "acesso.jsp";
 	}
 }

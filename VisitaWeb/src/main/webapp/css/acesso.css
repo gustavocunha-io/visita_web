@@ -6,45 +6,67 @@
 	font-family: sans-serif;
 }
 
-.card-autenticacao {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-}
-
 .bloco-autenticacao {
-	width: 500px;
-	height: 400px;
+	width: 450px;
+	height: 500px;
+	display: flex;
+	
+	margin: 10% auto;
+	
+	flex-direction: column;
+	align-items: center;
+	
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px black;
+}
+
+#titulo {
+	margin-top: 40px;
+}
+
+#mensagem-alerta {
+	margin-top: 20px;
+	margin-bottom: 50px;
+	color: red;
+}
+
+#campo-login, #campo-senha-login, #botao-enviar {
+	width: 400px;
+	height: 50px;
+	margin-bottom: 20px;
+	
+	box-sizing: border-box;
+	padding-left: 20px;
+	
 	display: flex;
 	flex-direction: column;
+	
+	border: none;
 	border-radius: 10px;
-	gap: 15px;
-	background-color: gray;
-}
-
-.bloco-autenticacao h1 {
-	margin-top: 15px;
-	text-align: center;	
-}
-
-.bloco-autenticacao input:not(#mostrar-senha-login) {
-	width: 80%;
-	margin: 20px;
-	box-sizing: border-box; /* Evita que o tamanho do input passe o tamanho da div */
-}
-
-.bloco-autenticacao input {
-	justify-content: center;
-	align-items: center;
-	border-radius: 15px;
-	padding: 10px;
-	border-style: none;
 	outline-style: none;
+	
+	box-shadow: 2px 2px 5px black;
 }
 
+#mostrar-senha-login {
+	margin-left: 10px;
+}
 
-.bloco-escondido {
-	display: none;
+#botao-enviar {
+	width: 300px;
+	margin: 40px auto;
+	padding-right: 20px;
+	
+	cursor: pointer;
+	transition: background-color 0.5s ease;
+}
+
+#botao-enviar:hover {
+	background: blue;
+	color: white;
+	
+}
+
+#rodape {
+	margin-top: 10px;
 }
