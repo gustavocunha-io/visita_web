@@ -54,6 +54,27 @@ public class IngressoDao implements Dao<Ingresso, Integer> {
 
 	@Override
 	public Optional<Ingresso> pesquisar(Integer id) {
+		String query = "SELECT * FROM tipo_ingresso WHERE id=?";
+		
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			
+			try(ResultSet resultSet = preparedStatement.executeQuery()){
+				if(resultSet.next()) {
+					Ingresso ingresso = new Ingresso();
+					
+					ingresso.setId(resultSet.getInt("id"));
+					ingresso.setTipo(resultSet.getString("tipo"));
+					ingresso.setPreco(resultSet.getBigDecimal("preco"));
+					
+					return Optional.of(ingresso);
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return Optional.empty();
 	}
 

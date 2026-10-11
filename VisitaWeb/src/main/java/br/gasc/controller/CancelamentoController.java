@@ -104,9 +104,8 @@ public class CancelamentoController implements Logica {
 				mensagemBuffer.append("<hr>");
 			    mensagemBuffer.append("<p><em>Apresente um documento com foto na recepção do museu.</em></p>");
 					
-			    EmailService emailService = new EmailService();
-				
-			    emailService.sendEmail(agendamento.getEmailResponsavel(), "Sistema GASC - Alteração no Agendamento", mensagemBuffer);
+//			    EmailService emailService = new EmailService();
+//			    emailService.sendEmail(agendamento.getEmailResponsavel(), "Sistema GASC - Alteração no Agendamento", mensagemBuffer);
 					
 				return "index.jsp";
 			}

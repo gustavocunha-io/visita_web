@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -153,6 +156,36 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 		return Optional.empty();
 	}
 	
+	public Optional<Agendamento> pesquisar(LocalDateTime dataHoraAgendamento) {
+		String query = "SELECT * FROM agendamento WHERE data_hora=?";
+		
+		System.out.println(Timestamp.valueOf(dataHoraAgendamento));
+		
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setTimestamp(1, Timestamp.valueOf(dataHoraAgendamento));
+			
+			try(ResultSet resultSet = preparedStatement.executeQuery()) {
+				if(resultSet.next()) {
+					Agendamento agendamento = new Agendamento();
+					
+					agendamento.setId(resultSet.getInt("id"));
+					agendamento.setDataHoraInicio(resultSet.getTimestamp("data_hora").toLocalDateTime());
+					agendamento.setNumeroPessoas(resultSet.getInt("numero_pessoas"));
+					agendamento.setEmailResponsavel(resultSet.getString("email_responsavel"));
+					agendamento.setTermoConsentimento(resultSet.getBoolean("termo_consentimento"));
+					agendamento.setCodigoConfimacao(resultSet.getString("codigo_confirmacao"));
+					agendamento.setIdMuseu(resultSet.getInt("id_museu"));
+					
+					return Optional.of(agendamento);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return Optional.empty();
+	}
+	
 	@Override
 	public List<Agendamento> listar() {
 		String query = "SELECT * FROM agendamento";
@@ -167,7 +200,10 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 				agendamento.setId(resultSet.getInt("id"));
 				agendamento.setDataHoraInicio(resultSet.getTimestamp("data_hora").toLocalDateTime());
 				agendamento.setNumeroPessoas(resultSet.getInt("numero_pessoas"));
+				agendamento.setEmailResponsavel(resultSet.getString("email_responsavel"));
 				agendamento.setTermoConsentimento(resultSet.getBoolean("termos_responsabilidade"));
+				agendamento.setCodigoConfimacao(resultSet.getString("codigo_confirmacao"));
+				agendamento.setIdMuseu(resultSet.getInt("id_museu"));
 				
 				agendamentosList.add(agendamento);
 			}

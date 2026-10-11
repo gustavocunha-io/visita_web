@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Inicio</title>
+<title>inicio</title>
 </head>
 <body>
 	<c:import url="cabecalho.jsp"></c:import>

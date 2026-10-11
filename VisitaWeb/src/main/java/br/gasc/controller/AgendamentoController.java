@@ -124,7 +124,7 @@ public class AgendamentoController implements Logica {
 				String emailResponsavel = request.getParameter("email-responsavel");
 				boolean termoConsentimento = Boolean.valueOf(request.getParameter("termo-responsabilidade"));
 				String codigoConfirmacao = SenhaService.hashSenha(DataUtil.converterDataHoraToString(dataHora));
-				String idIngressoStr = request.getParameter("ingresso-selecionado");
+				
 				
 				Agendamento agendamento = new Agendamento();
 				
@@ -142,7 +142,7 @@ public class AgendamentoController implements Logica {
 					AgendamentoPessoa agendamentoPessoa = new AgendamentoPessoa();
 					PessoaDao pessoaDao = new PessoaDao();
 					List<Pessoa> pessoasList = new ArrayList<Pessoa>();
-					Integer idIngresso = Integer.getInteger(idIngressoStr);
+					List<String> idIngressoList =  Arrays.asList(request.getParameterValues("ingresso-selecionado"));
 					
 					for(int indice = 0; indice < numeroPessoasAgendamento; indice++) {
 						String cpfVisitante = cpfsList.get(indice);
@@ -158,10 +158,11 @@ public class AgendamentoController implements Logica {
 							pessoa = pessoaDao.inserir(pessoa);
 						}
 						
+												
 						agendamentoPessoa.setIdPessoa(pessoa.getId());
 						agendamentoPessoa.setIdAgendamento(agendamento.getId());
 						agendamentoPessoa.setCompareceu(false);
-						agendamentoPessoa.setTipoIngresso(idIngresso);
+						agendamentoPessoa.setTipoIngresso(Integer.valueOf(idIngressoList.get(indice)));
 						agendamentoPessoaDao.inserir(agendamentoPessoa);
 						
 						pessoasList.add(pessoa);
@@ -182,8 +183,7 @@ public class AgendamentoController implements Logica {
 					mensagemBuffer.append("<hr>");
 			        mensagemBuffer.append("<p><em>Apresente um documento com foto na recepção do museu.</em></p>");
 					
-					EmailService emailService = new EmailService();
-					
+					// EmailService emailService = new EmailService();
 					// emailService.sendEmail(emailResponsavel, "Sistema GASC - Agendamento Museu", mensagemBuffer);
 					
 					request.setAttribute("mensagemSucesso", "Agendamento realizado com sucesso para " + dataFinalStr);

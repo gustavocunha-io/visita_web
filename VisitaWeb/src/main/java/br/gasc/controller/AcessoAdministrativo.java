@@ -1,7 +1,11 @@
 package br.gasc.controller;
 
 
+import java.util.List;
+
 import br.gasc.dao.AdministradorDao;
+import br.gasc.dao.MuseuDao;
+import br.gasc.model.Museu;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -13,22 +17,20 @@ public class AcessoAdministrativo implements Logica {
 		String login = request.getParameter("campo-login");
 		String senha = request.getParameter("campo-senha-login");
 		
-		System.out.println(login);
-		System.out.println(senha);
-		
 		AdministradorDao adminDao = new AdministradorDao();
 		boolean flag = adminDao.validarCredenciais(login, senha);
-		
-		System.out.println(flag);
-		
+				
 		if(flag == true) {
+			MuseuDao museuDao = new MuseuDao();
+			List<Museu> museusList = museuDao.listar();
 			HttpSession httpSession = request.getSession();
 			
 			httpSession.setMaxInactiveInterval(300); // 5 minutos.
 			httpSession.setAttribute("status", true);
 			httpSession.setAttribute("login", login);
+			httpSession.setAttribute("museusList", museusList);
 			
-			return "cadastro-funcionarios.jsp";
+			return "index-administrativo.jsp";
 		}
 		
 		return "acesso.jsp";
