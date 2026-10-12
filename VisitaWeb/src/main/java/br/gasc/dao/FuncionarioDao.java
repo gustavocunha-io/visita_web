@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
-import br.gasc.dto.FabricaConexoes;
+import br.gasc.db.FabricaConexoes;
 import br.gasc.model.Funcionario;
 import br.gasc.service.SenhaService;
 

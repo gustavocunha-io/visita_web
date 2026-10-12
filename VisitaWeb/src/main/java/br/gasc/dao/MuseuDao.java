@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import br.gasc.dto.FabricaConexoes;
+import br.gasc.db.FabricaConexoes;
 import br.gasc.model.Museu;
 
 public class MuseuDao implements Dao<Museu, Integer> {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import br.gasc.dto.FabricaConexoes;
+import br.gasc.db.FabricaConexoes;
 import br.gasc.model.AgendamentoPessoa;
 
 public class AgendamentoPessoaDao implements Dao<AgendamentoPessoa, Integer> {
@@ -123,6 +123,31 @@ public class AgendamentoPessoaDao implements Dao<AgendamentoPessoa, Integer> {
 		}
 		
 		return false;
+	}
+	
+	public List<AgendamentoPessoa> obterVisitantesMuseuDia() {
+		String query = "SELECT * FROM agendamento_pessoas WHERE data_hora::date=CURRENT_DATE";
+		List<AgendamentoPessoa> agendamentoPessoasList = new ArrayList<AgendamentoPessoa>();
+		
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			try(ResultSet resultSet = preparedStatement.executeQuery()) {
+				while(resultSet.next()) {
+					AgendamentoPessoa agendamentoPessoa = new AgendamentoPessoa();
+					
+					agendamentoPessoa.setId(resultSet.getInt("id"));
+					agendamentoPessoa.setIdPessoa(resultSet.getInt("id_pessoa"));
+					agendamentoPessoa.setIdAgendamento(resultSet.getInt("id_agendamento"));
+					agendamentoPessoa.setCompareceu(false);
+					agendamentoPessoa.setTipoIngresso(resultSet.getInt("id_ingresso"));
+					
+					agendamentoPessoasList.add(agendamentoPessoa);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return agendamentoPessoasList;
 	}
 	
 	@Override

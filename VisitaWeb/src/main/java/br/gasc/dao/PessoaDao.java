@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import br.gasc.dto.FabricaConexoes;
+import br.gasc.db.FabricaConexoes;
 import br.gasc.model.Pessoa;
 
 public class PessoaDao implements Dao<Pessoa, Integer> {

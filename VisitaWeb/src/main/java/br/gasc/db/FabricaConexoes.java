@@ -1,4 +1,4 @@
-package br.gasc.dto;
+package br.gasc.db;
 
 import java.io.IOException;
 import java.io.InputStream;
