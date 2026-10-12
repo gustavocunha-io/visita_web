@@ -22,7 +22,7 @@ public class AdministradorDao {
 			preparedStatement.setString(1, login);
 			
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while(resultSet.next())
+				if(resultSet.next())
 					return SenhaService.varificarSenha(senha, resultSet.getString("senha"));
 			}
 		} catch (SQLException e) {

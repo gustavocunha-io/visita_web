@@ -56,6 +56,27 @@ public class AgendamentoPessoaDao implements Dao<AgendamentoPessoa, Integer> {
 
 	@Override
 	public Optional<AgendamentoPessoa> pesquisar(Integer id) {
+		String query = "SELECT * FROM agendamento_pessoas WHERE id=?";
+		
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, id);
+			
+			try(ResultSet resultSet = preparedStatement.executeQuery()) {
+				if(resultSet.next()) {
+					AgendamentoPessoa agendamentoPessoa = new AgendamentoPessoa();
+					
+					agendamentoPessoa.setId(resultSet.getInt("id"));
+					agendamentoPessoa.setIdAgendamento(resultSet.getInt("id_agendamento"));
+					agendamentoPessoa.setIdPessoa(resultSet.getInt("id_pessoa"));
+					agendamentoPessoa.setTipoIngresso(resultSet.getInt("tipo_ingresso"));
+					agendamentoPessoa.setCompareceu(resultSet.getBoolean("compareceu"));
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			
 		return Optional.empty();
 	}
 	
@@ -86,6 +107,24 @@ public class AgendamentoPessoaDao implements Dao<AgendamentoPessoa, Integer> {
 		return agendamentoPessoasList;
 	}
 
+	public boolean confirmarComparecimento(Integer idPessoa, Integer idAgendamento) {
+		String query = "UPDATE agendamento_pessoas SET compareceu=? WHERE id_pessoa=? AND id_agendamento=?";
+		
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setBoolean(1, true);
+			preparedStatement.setInt(2, idPessoa);
+			preparedStatement.setInt(3, idAgendamento);
+			
+			if(preparedStatement.executeUpdate() > 0)
+				return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public List<AgendamentoPessoa> listar() {
 		return null;

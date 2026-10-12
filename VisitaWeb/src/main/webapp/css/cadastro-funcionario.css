@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#cabecalho {
+	margin-bottom: 20px;
+	margin-left: 10px;
+}
+
+.dados-funcionario {
+	display: flex;
+	flex-direction: column;
+}
+
+label {
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+#museu-selecionado {
+	width: 200px;
+	margin-bottom: 10px
+}
+
+#botao-cadastrar {
+	width: 70px;
+	height: 30px;
+	margin-top: 10px;
+	margin-left: 20px;
+}

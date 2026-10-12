@@ -28,6 +28,7 @@ label {
 
 #dados-pessoa label input:not([type="checkbox"]) {
     width: 250px;
+    padding: 5px;
 }
 
 #botao-salvar {

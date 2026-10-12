@@ -6,14 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.postgresql.core.Query;
 
 import br.gasc.dto.FabricaConexoes;
 import br.gasc.model.Agendamento;
@@ -156,13 +152,12 @@ public class AgendamentoDao implements Dao<Agendamento, Integer> {
 		return Optional.empty();
 	}
 	
-	public Optional<Agendamento> pesquisar(LocalDateTime dataHoraAgendamento) {
-		String query = "SELECT * FROM agendamento WHERE data_hora=?";
-		
-		System.out.println(Timestamp.valueOf(dataHoraAgendamento));
+	public Optional<Agendamento> pesquisar(LocalDateTime dataHoraAgendamento, Integer idMuseu) {
+		String query = "SELECT * FROM agendamento WHERE id_museu=? AND data_hora=?";
 		
 		try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-			preparedStatement.setTimestamp(1, Timestamp.valueOf(dataHoraAgendamento));
+			preparedStatement.setInt(1, idMuseu);
+			preparedStatement.setTimestamp(2, Timestamp.valueOf(dataHoraAgendamento));
 			
 			try(ResultSet resultSet = preparedStatement.executeQuery()) {
 				if(resultSet.next()) {

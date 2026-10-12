@@ -4,6 +4,7 @@ public class Funcionario {
 	private Integer id;
 	private String nome;
 	private String cpf;
+	private String senha;
 	private Integer idMuseu;
 	
 	public Funcionario() {}
@@ -30,6 +31,14 @@ public class Funcionario {
 	
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+	
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 	
 	public Integer getIdMuseu() {

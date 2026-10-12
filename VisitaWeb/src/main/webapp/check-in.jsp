@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ include file="autenticacao.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,7 @@
 			<div>
 				<input type="hidden" name="logica" value="CheckInController">
 				<input type="hidden" name="acao" value="buscarAgendamento">
+				<input type="hidden" name="id-museu" value="${idMuseuFuncionario}">
 				<label>Data: <input type="date" id="data-agendamento" name="data-agendamento" required="required"></label>
 				<label>Horário: <input type="time" id="horario-agendamento" name="horario-agendamento" required="required"></label>
 				<input type="submit" value="buscar">
@@ -28,10 +30,11 @@
 		<form action="controladora" method="post">
 			<input type="hidden" name="logica" value="CheckInController">
 			<input type="hidden" name="acao" value="salvarCheckIn">
+			<input type="hidden" name="id-agendamento" value="${idAgendamento}">
 			<hr>
 			<c:forEach var="pessoa" items="${pessoasList}">
 				<div id="dados-pessoa">
-					<label>Nome:<br><input type="text" id="nome-pessoa" value="${pessoa.nome}" disabled="disabled"></label>
+					<label>Nome:<br><input type="text" value="${pessoa.nome}" disabled="disabled"></label>
 					<label>CPF:<br><input type="text" value="${pessoa.cpf}" disabled="disabled"></label>
 					<c:forEach var="agendamentoPessoa" items="${agendamentoPessoasList}">
 						<c:if test="${agendamentoPessoa.idPessoa == pessoa.id}">
@@ -40,7 +43,7 @@
 									<label>Tipo ingresso:<br><input type="text" value="${ingresso.tipo}" disabled="disabled"></label>
 								</c:if>
 							</c:forEach>
-							<label><br><input type="checkbox" id="compareceu" name="compareceu" value="${pessoa.id}" ${agendmanetoPessoa.compareceu == true ? 'checked="checked" disabled="disabled"' : ''}> Compareceu</label>
+							<label><br><input type="checkbox" id="compareceu" name="compareceu" value="${pessoa.id}" ${agendamentoPessoa.compareceu == true ? 'checked="checked" disabled="disabled"' : ''}> Compareceu</label>
 						</c:if>
 					</c:forEach>
 				</div>

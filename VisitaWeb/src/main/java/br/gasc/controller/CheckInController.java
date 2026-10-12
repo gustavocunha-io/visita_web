@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,6 @@ import br.gasc.model.Agendamento;
 import br.gasc.model.AgendamentoPessoa;
 import br.gasc.model.Ingresso;
 import br.gasc.model.Pessoa;
-import br.gasc.util.DataUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -28,14 +28,16 @@ public class CheckInController implements Logica {
 		if("buscarAgendamento".equals(acao)) {		
 			String dataAgendamentoStr = request.getParameter("data-agendamento");
 			String horarioAgendamentoStr = request.getParameter("horario-agendamento");
+			String idMuseuFuncionarioStr = request.getParameter("id-museu");
 			
 			if(dataAgendamentoStr != null || horarioAgendamentoStr != null) {
 				LocalDate dataAgendameno = LocalDate.parse(dataAgendamentoStr);
 				LocalTime horarioAgendamento = LocalTime.parse(horarioAgendamentoStr);
 				LocalDateTime dataHoraAgendamento = LocalDateTime.of(dataAgendameno, horarioAgendamento);
+				Integer idMuseuFuncionario = Integer.valueOf(idMuseuFuncionarioStr); 
 				
 				AgendamentoDao agendamentoDao = new AgendamentoDao();
-				Optional<Agendamento> agendamentoOpt = agendamentoDao.pesquisar(dataHoraAgendamento);
+				Optional<Agendamento> agendamentoOpt = agendamentoDao.pesquisar(dataHoraAgendamento, idMuseuFuncionario);
 				
 				if(agendamentoOpt.isPresent()) {
 					Agendamento agendamento = agendamentoOpt.get();
@@ -59,6 +61,7 @@ public class CheckInController implements Logica {
 						request.setAttribute("pessoasList", pessoasList);
 						request.setAttribute("agendamentoPessoasList", agendamentoPessoasList);
 						request.setAttribute("ingressosList", ingressosList);
+						request.setAttribute("idAgendamento", agendamento.getId());
 						request.setAttribute("status", true);
 						
 						return "check-in.jsp";
@@ -74,7 +77,21 @@ public class CheckInController implements Logica {
 		}
 		
 		if("salvarCheckIn".equals(acao)) {
+			List<String> compareceramList = Arrays.asList(request.getParameterValues("compareceu"));
+			String idAgendamentoStr = request.getParameter("id-agendamento");
 			
+			if(compareceramList.size() > 0) {
+				Integer idAgendamento = Integer.valueOf(idAgendamentoStr);
+				AgendamentoPessoaDao agendamentoPessoaDao = new AgendamentoPessoaDao();
+				
+				System.out.println(idAgendamento);
+				
+				for(String compareceu : compareceramList)
+					agendamentoPessoaDao.confirmarComparecimento(Integer.valueOf(compareceu), idAgendamento);
+				
+				request.setAttribute("mensagem", "Sucesso: O check-in foi realizado com sucesso");
+				request.setAttribute("status", true);
+			}
 		}
 		
 		return "index-administrativo.jsp";

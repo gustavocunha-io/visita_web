@@ -11,25 +11,33 @@ public class CadastroFuncionariosController implements Logica {
 	public String executar(HttpServletRequest request, HttpServletResponse response) {
 		String nomeFuncionario = request.getParameter("nome-funcionario");
 		String cpfFuncionario = request.getParameter("cpf-funcionario");
+		String senhaFuncionario = request.getParameter("senha-funcionario");
 		String idMuseuStr = request.getParameter("museu-selecionado");
 		
 		System.out.println(nomeFuncionario);
 		System.out.println(cpfFuncionario);
 		System.out.println(idMuseuStr);
 		
-		if(nomeFuncionario != null && cpfFuncionario != null && idMuseuStr != null) {
+		if(nomeFuncionario != null && cpfFuncionario != null && senhaFuncionario != null && idMuseuStr != null) {
 			FuncionarioDao funcionarioDao = new FuncionarioDao();
-			Integer idMuseu = Integer.valueOf(idMuseuStr);
 			Funcionario funcionario = new Funcionario();
+			Integer idMuseu = Integer.valueOf(idMuseuStr);
 			
 			funcionario.setNome(nomeFuncionario);
 			funcionario.setCpf(cpfFuncionario);
+			funcionario.setSenha(senhaFuncionario);
 			funcionario.setIdMuseu(idMuseu);
-			
 			funcionarioDao.inserir(funcionario);
+			
+			request.setAttribute("status", true);
+			
+			return "index-administrativo.jsp";
 		}
 		
-		return "index-administrativo.jsp";
+		request.setAttribute("mensagem-erro", "Erro: Os valores não podem estar em branco!");
+		request.setAttribute("status", false);
+		
+		return "cadastro-funcionario.jsp";
 	}
 
 }
